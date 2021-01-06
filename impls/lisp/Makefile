@@ -1,6 +1,6 @@
 LISP ?= sbcl
 
-step% : src/step%.lisp
+step% : src/step%.lisp src/reader.lisp
 
 	$(LISP) --load $@.asd \
 		--eval '(ql:quickload :$@)' \
