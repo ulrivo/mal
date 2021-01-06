@@ -17,9 +17,20 @@
 (defun repl (input)
   input)
 
+;; (defun main ()
+;;   (loop
+;;     (princ "user> ")
+;;     (force-output)
+;;     (princ (repl (read-line)))
+;;     (terpri)))
+
 (defun main ()
-  (loop 
-    (princ "user> ")
-    (force-output)
-    (princ (repl (read-line)))
+  (do ((i 0 (1+ i))
+       (text ""))
+      ((or (null text)
+           (string= "quit" (string-trim " " text))))
+    (setf text
+          (rl:readline :prompt (format nil "user> ")
+                       :add-history t))
+    (princ text)
     (terpri)))
