@@ -27,8 +27,7 @@
 (defun main ()
   (do ((i 0 (1+ i))
        (text ""))
-      ((or (null text)
-           (string= "quit" (string-trim " " text))))
+      ((null text))
     (setf text
           (rl:readline :prompt (format nil "user> ")
                        :add-history t))
