@@ -7,10 +7,8 @@
            :accessor tokens)))
 
 
-(defun make-reader (string)
-  (make-instance 'reader
-                 :tokens (str:words string)))
-
+(defun make-reader (tks)
+  (make-instance 'reader :tokens tks))
 
 (defgeneric next (reade))
 
@@ -30,7 +28,16 @@
       (nth (pos reade) (tokens reade))
       nil))
 
+(defparameter *mal-scanner* (cl-ppcre:create-scanner
+ "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)"))
+
 (defun tokenize (string)
-  (cl-ppcre:all-matches-as-strings 
-   "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)"
-   string))
+  (let (result)
+    (cl-ppcre:do-scans (s e rs re *mal-scanner* string)
+      (push (list (aref rs 0) (aref re 0)) result))
+    (mapcar (lambda (l) (subseq string (first l) (second l)))
+            (reverse (cdr result)))))
+
+(defun read-str (string)
+  ;; missing read-form
+  (read-form (make-reader (tokenize string))))

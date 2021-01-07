@@ -12,7 +12,8 @@
   :author "Ulrich Vollert"
   :description "Implementation of step 1 of MAL in Common Lisp"
   :serial t
-  :components ((:file "reader")
+  :components ((:file "package")
+               (:file "reader")
                (:file "step1_read_print"))
   :depends-on (:cl-readline :cl-ppcre)
   :pathname "src/"
