@@ -1,5 +1,10 @@
 (in-package :mal)
 
+(defmacro when-not-bind (sym exp no-bind)
+  "Let sym exp. If sym is not nil, answer syms, else no-bind"
+  `(let ((,sym ,exp))
+     (if ,sym ,sym ,no-bind)))
+
 (defmacro let-if (sym exp then-exp else-exp)
   "Let sym exp. If sym is not nil, eval then-exp, else else-exp"
   `(let ((,sym ,exp))
@@ -43,25 +48,23 @@
     (mapcar (lambda (l) (subseq string (first l) (second l)))
             (reverse (cdr result)))))
 
-(defun error-msg (msg reader)
-  (format t "error: ~a in tokens: ~a at token: ~a~%"
-          msg (tokens reader) (pos reader)))
+(defun error-msg (msg)
+  (format nil "error: ~a ~%" msg))
 
 (defun mal-read-atom (reader)
-  (let* ((atom (next reader))
-         (i (parse-integer atom :junk-allowed t)))
-    (if i i atom)))
+  (let ((atom (next reader)))
+    (when-not-bind i (parse-integer atom :junk-allowed t) (intern atom :mal))))
 
 (defun mal-read-list (reader)
   "Starting with a opening parentheis '('. Read a list of tokens as MAL forms."
   (next reader) ;; the opening parenthesis
   (do ((token (mal-read-form reader) (mal-read-form reader))
        (result nil (cons token result)))
-      ((or (and (stringp token) (string= ")" token))
+      ((or (and (symbolp token) (eql (intern ")" :mal) token))
            (at-end reader))
-       (if (and (stringp token) (string= ")" token))
+       (if (and (symbolp token) (eql (intern ")" :mal) token))
            (reverse result)
-           (error-msg "unbalanced parenthesis" reader)))))
+           (error-msg "unbalanced parenthesis")))))
 
 (defun mal-read-form (reader)
   "Answer a MAL datatype"
@@ -74,10 +77,3 @@
   (let-if tok (tokenize string)
           (mal-read-form (make-reader (tokenize string)))
           nil))
-
-(defun mal-print-str (mal)
-  "Read a MAL type object and answer a string."
-  (cond
-    ((numberp mal) (format nil "~a" mal))
-    ((listp mal) (format nil "(~{~a~^ ~})" (mapcar #'mal-print-str mal)))
-    (t (format nil "~a" mal))))
