@@ -46,12 +46,3 @@ There is a Git branch for every step which is made by
 
 `git checkout -b step2`
 
-``` common-lisp
-    (ql:quickload :step0_repl)
-    ,in-package :mal
-
-```
-
-`
-bc
-`
