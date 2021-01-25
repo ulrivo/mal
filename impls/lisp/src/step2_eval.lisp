@@ -19,6 +19,7 @@
     (/ . mal-divide)))
 
 (defun mal-eval (ast env)
+  ""
   (cond
     ((not (listp ast)) (mal-eval-ast ast env))
     ((null ast) ast)
@@ -36,6 +37,7 @@
     (t ast)))
 
 (defun repl (string)
+  "Read, eval, and print the result of evaluation of an input string."
   (princ (mal-print-str (mal-eval (mal-read-str string) *env*)))
   (terpri))
 

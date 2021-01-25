@@ -25,4 +25,33 @@ Omit the load if there is a link:
     ,in-package :mal
 ```
 
+## Build and test process
 
+In directory ~/dev/lisp/mal do one of
+
+``` 
+    make "build^lisp^step2"
+    make "test^lisp^step2"
+```
+
+*Or*: in directory ~/common-lisp/mal (which is linked with ~/dev/lisp/mal/impls/lisp), do
+
+`make step2_eval`
+
+which builds an executable named step2_eval.
+
+## Development
+
+There is a Git branch for every step which is made by
+
+`git checkout -b step2`
+
+``` common-lisp
+    (ql:quickload :step0_repl)
+    ,in-package :mal
+
+```
+
+`
+bc
+`
