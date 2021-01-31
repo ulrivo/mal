@@ -14,8 +14,7 @@
   (format nil "error: ~a" msg))
 
 (define-condition eval-error-condition (error)
-  ((message :initarg :message :reader message)
-   (ast :initarg :ast :reader ast))
+  ((message :initarg :message :reader message))
   (:report (lambda (condition stream)
              (format stream "Eval error: ~a"
                      (message condition)))))
