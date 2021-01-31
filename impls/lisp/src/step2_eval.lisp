@@ -19,26 +19,36 @@
     (/ . mal-divide)))
 
 (defun mal-eval (ast env)
-  ""
   (cond
     ((not (listp ast)) (mal-eval-ast ast env))
     ((null ast) ast)
     ((listp ast)
-    (let ((fargs (mal-eval-ast ast env)))
+     (let ((fargs (mal-eval-ast ast env)))
        (apply (car fargs) (cdr fargs))))))
 
 (defun mal-eval-ast (ast env)
   (cond
     ((symbolp ast)
-     (when-not-bind result (cdr (assoc ast env))
-                    (error-msg (format nil "'~a' not found" ast))))
+     (let ((result (cdr (assoc ast env))))
+       (if result
+           result
+           (signal (make-condition 'eval-error-condition
+                                   :ast ast
+                                   :message
+                                   (format nil "'~a' not found" ast))))))
     ((listp ast)
      (mapcar (lambda (a) (mal-eval a env)) ast))
     (t ast)))
 
 (defun repl (string)
   "Read, eval, and print the result of evaluation of an input string."
-  (princ (mal-print-str (mal-eval (mal-read-str string) *env*)))
+  (let ((result (handler-case
+                    (mal-eval (mal-read-str string) *env*)
+                  (eval-error-condition (err)
+                    (error-msg (message err)))
+                  (sb-int:simple-program-error (err)
+                    (error-msg err)))))
+    (princ (mal-print-str result)))
   (terpri))
 
 (defun main ()
