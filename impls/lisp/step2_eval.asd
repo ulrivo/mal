@@ -1,8 +1,8 @@
 (defpackage #:mal-asd
   (:use :cl :asdf))
 
-(ql:quickload :cl-ppcre :silent t)
-(ql:quickload :cl-readline :silent t)
+;; (ql:quickload :cl-ppcre :silent t)
+;; (ql:quickload :cl-readline :silent t)
 
 (in-package :mal-asd)
 

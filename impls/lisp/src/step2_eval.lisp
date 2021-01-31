@@ -47,7 +47,9 @@
                   (eval-error-condition (err)
                     (error-msg (message err)))
                   (sb-int:simple-program-error (err)
-                    (error-msg err)))))
+                    (error-msg err))
+                  (t (err)
+                    (error-msg (format nil " -default- ~a" err))))))
     (princ (mal-print-str result)))
   (terpri))
 
