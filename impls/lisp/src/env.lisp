@@ -2,7 +2,7 @@
 
 (defclass environment ()
   ((env-hash :initform (make-hash-table) :reader env-hash)
-   (outer :initarg :outer :reader outer)))
+   (outer :initarg :outer :initform nil :reader outer)))
 
 (defgeneric env-set (env key value)
   (:documentation "Add a key and a value to hash and answer env"))
@@ -12,7 +12,7 @@
   env)
 
 (defgeneric env-find (env key)
-  (:documentation "Find the value for the key. It is not present and
+  (:documentation "Find the value for the key. If it is not present and
                    outer is not nil, find recursively in environment outer"))
 
 (defmethod env-find ((env environment) (key symbol))

@@ -16,9 +16,7 @@
 (define-condition eval-error-condition (error)
   ((message :initarg :message :reader message))
   (:report (lambda (condition stream)
-             (format stream "Eval error: ~a"
-                     (message condition)))))
+             (format stream "Eval error: ~a" (message condition)))))
 
 (defun signal-eval-error (message)
-  (signal (make-condition 'eval-error-condition
-                          :message message)))
+  (signal (make-condition 'eval-error-condition :message message)))
