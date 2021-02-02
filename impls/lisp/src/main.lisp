@@ -30,10 +30,10 @@
     ((not (listp ast)) (mal-eval-ast ast env))
     ((null ast) ast)
     ((listp ast)
-     (cond
-       ((eql (first ast) (intern "def!" :mal))
+     (case (first ast)
+       ((intern "def!" :mal)
         (env-set env (second ast) (mal-eval (third ast) env)))
-       ((eql (first ast) (intern "let*" :mal))
+       ((intern "let*" :mal)
         (let ((new-env (make-instance 'environment :outer env)))
           (loop for (x y) on (second ast) by #'cddr do
             (when y (env-set new-env x (mal-eval y new-env))))

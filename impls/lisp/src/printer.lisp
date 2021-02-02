@@ -5,4 +5,5 @@
   (cond
     ((numberp mal) (format nil "~a" mal))
     ((listp mal) (format nil "(~{~a~^ ~})" (mapcar #'mal-print-str mal)))
+    ((functionp mal) (format nil "#<function>"))
     (t (format nil "~a" mal))))
