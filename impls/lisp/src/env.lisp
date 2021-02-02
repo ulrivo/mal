@@ -8,8 +8,7 @@
   (:documentation "Add a key and a value to hash and answer env"))
 
 (defmethod env-set ((env environment) (key symbol) value)
-  (setf (gethash key (env-hash env)) value)
-  env)
+  (setf (gethash key (env-hash env)) value))
 
 (defgeneric env-find (env key)
   (:documentation "Find the value for the key. If it is not present and
