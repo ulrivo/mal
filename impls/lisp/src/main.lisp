@@ -31,15 +31,19 @@
     ((null ast) ast)
     ((listp ast)
      (case (first ast)
-       ((intern "def!" :mal)
+       (|def!|
         (env-set env (second ast) (mal-eval (third ast) env)))
-       ((intern "let*" :mal)
+       (|let*|
         (let ((new-env (make-instance 'environment :outer env)))
           (loop for (x y) on (second ast) by #'cddr do
-            (when y (env-set new-env x (mal-eval y new-env))))
+            (if y
+                (env-set new-env x (mal-eval y new-env))
+                (signal-eval-error
+                 (format nil "odd number of arguments in let*: ~s" ast))))
           (mal-eval (third ast) new-env)))
-       (t (let ((fargs (mal-eval-ast ast env)))
-            (apply (car fargs) (cdr fargs))))))))
+       (otherwise
+        (let ((fargs (mal-eval-ast ast env)))
+          (apply (car fargs) (cdr fargs))))))))
 
 (defun mal-eval-ast (ast env)
   (cond
