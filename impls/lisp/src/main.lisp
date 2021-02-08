@@ -15,7 +15,7 @@
 
 (defun init-env ()
   "Initialize a new environment with arithmetic functions. Answer environment."
-  (let ((env (make-instance 'environment)))
+  (let ((env (make-environment)))
     (mapcan (lambda (kv) (env-set env (car kv) (cdr kv)))
             '((+ . mal-add)
               (- . mal-subtract)
@@ -34,7 +34,7 @@
        (|def!|
         (env-set env (second ast) (mal-eval (third ast) env)))
        (|let*|
-        (let ((new-env (make-instance 'environment :outer env)))
+        (let ((new-env (make-environment env)))
           (loop for (x y) on (second ast) by #'cddr do
             (if y
                 (env-set new-env x (mal-eval y new-env))
@@ -42,15 +42,15 @@
                  (format nil "odd number of arguments in let*: ~s" ast))))
           (mal-eval (third ast) new-env)))
        (|do|
-        (last (mal-eval-ast (cdr ast))))
+        (last (mal-eval-ast (cdr ast) env)))
        (|if|
         (mal-eval (if (mal-eval (second ast) env)
                       (third ast)
-                      (forth ast)) env))
+                      (fourth ast)) env))
        (|fn*|
         (lambda (&rest params)
           (mal-eval (third ast)
-                    (make-environment env (second ast) params))))
+                    (make-environment env (second ast)  params))))
        (otherwise
         (let ((fargs (mal-eval-ast ast env)))
           (apply (car fargs) (cdr fargs))))))))

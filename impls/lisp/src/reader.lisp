@@ -29,7 +29,7 @@
       (nth (pos reader) (tokens reader))))
 
 (defparameter *mal-scanner* (cl-ppcre:create-scanner
-                             "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)"))
+ "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)"))
 
 (defun tokenize (string)
   (let (result)
@@ -38,9 +38,16 @@
     (mapcar (lambda (l) (subseq string (first l) (second l)))
             (reverse (cdr result)))))
 
+(defun string-to-symbol (str)
+  (let ((symb (intern str :mal)))
+    (case symb
+      (|t|       t)
+      (|nil|     nil)
+      (otherwise symb))))
+
 (defun mal-read-atom (reader)
   (let ((atom (next reader)))
-    (when-not-bind i (parse-integer atom :junk-allowed t) (intern atom :mal))))
+    (when-not-bind i (parse-integer atom :junk-allowed t) (string-to-symbol atom))))
 
 (defun mal-read-list (reader)
   "Starting with a opening parentheis '('. Read a list of tokens as MAL forms."
@@ -62,5 +69,5 @@
 (defun mal-read-str (string)
   "Read a string and answer a MAL type object."
   (let-if tok (tokenize string)
-          (mal-read-form (make-reader (tokenize string)))
+          (mal-read-form (make-reader tok))
           nil))
