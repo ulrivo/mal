@@ -4,6 +4,11 @@
   ((env-hash :initform (make-hash-table) :reader env-hash)
    (outer :initarg :outer :initform nil :reader outer)))
 
+(defun make-environment (outer &optional binds exprs)
+  (let ((env (make-instance 'environment :outer outer)))
+    (mapcan (lambda (b e) (env-set env b e)) binds exprs)
+    env))
+
 (defgeneric env-set (env key value)
   (:documentation "Add a key and a value to hash and answer env"))
 

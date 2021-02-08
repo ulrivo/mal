@@ -41,6 +41,16 @@
                 (signal-eval-error
                  (format nil "odd number of arguments in let*: ~s" ast))))
           (mal-eval (third ast) new-env)))
+       (|do|
+        (last (mal-eval-ast (cdr ast))))
+       (|if|
+        (mal-eval (if (mal-eval (second ast) env)
+                      (third ast)
+                      (forth ast)) env))
+       (|fn*|
+        (lambda (&rest params)
+          (mal-eval (third ast)
+                    (make-environment env (second ast) params))))
        (otherwise
         (let ((fargs (mal-eval-ast ast env)))
           (apply (car fargs) (cdr fargs))))))))
