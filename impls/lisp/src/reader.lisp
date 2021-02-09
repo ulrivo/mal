@@ -41,7 +41,7 @@
     (case symb
       (|true|    'true)
       (|false|   'false)
-      (|nil|     'nil)
+      (|nil|     (intern "nil" :mal))
       (otherwise symb))))
 
 (defun mal-read-atom (reader)

@@ -76,4 +76,4 @@
     (>=       . mal->=)
     (true     . true)
     (false    . false)
-    (nil      . nil)))
+    (|nil|    . |nil|)))

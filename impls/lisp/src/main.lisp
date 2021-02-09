@@ -28,9 +28,11 @@
        (|do|     ;; do evaluate all elements of a list, answer last
         (last (mal-eval-ast (cdr ast) env)))
        (|if|
-        (mal-eval (if (eq (mal-eval (second ast) env) 'true)
-                      (third ast)
-                      (fourth ast)) env))
+        (let ((result (mal-eval (second ast) env)))
+          (mal-eval (if (not (or (eq result 'false)
+                                 (eq result (intern "nil" :mal))))
+                        (third ast)
+                        (fourth ast)) env)))
        (|fn*|
         (lambda (&rest params)
           (mal-eval (third ast)
