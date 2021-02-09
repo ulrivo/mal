@@ -38,6 +38,11 @@
 (defun mal-emptyp (xs)
   (mal-boolean (null xs)))
 
+(defun mal-count (xs)
+  (if (listp xs)
+      (length xs)
+      0))
+
 ;; comparisons
 
 (defun mal-< (x y)
@@ -69,7 +74,7 @@
     (|list|   . list)
     (|list?|  . mal-listp)
     (|empty?| . mal-emptyp)
-    (|count|  . length)
+    (|count|  . mal-count)
     (<        . mal-<)
     (<=       . mal-<=)
     (>        . mal->)
