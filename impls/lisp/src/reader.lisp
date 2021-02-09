@@ -1,10 +1,8 @@
 (in-package :mal)
 
 (defclass reader ()
-  ((pos :initform 0
-        :accessor pos)
-   (tokens :initarg :tokens
-           :accessor tokens)))
+  ((pos :initform 0 :accessor pos)
+   (tokens :initarg :tokens :accessor tokens)))
 
 (defun make-reader (tks)
   (make-instance 'reader :tokens tks))
@@ -29,7 +27,7 @@
       (nth (pos reader) (tokens reader))))
 
 (defparameter *mal-scanner* (cl-ppcre:create-scanner
- "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)"))
+                             "[\\s,]*(~@|[\\[\\]{}()'`~^@]|\"(?:\\\\.|[^\\\\\"])*\"?|;.*|[^\\s\\[\\]{}('\"`,;)]*)"))
 
 (defun tokenize (string)
   (let (result)
@@ -41,13 +39,16 @@
 (defun string-to-symbol (str)
   (let ((symb (intern str :mal)))
     (case symb
-      (|t|       t)
-      (|nil|     nil)
+      (|true|    'true)
+      (|false|   'false)
+      (|nil|     'nil)
       (otherwise symb))))
 
 (defun mal-read-atom (reader)
   (let ((atom (next reader)))
-    (when-not-bind i (parse-integer atom :junk-allowed t) (string-to-symbol atom))))
+    (when-not-bind i
+                   (parse-integer atom :junk-allowed t)
+                   (string-to-symbol atom))))
 
 (defun mal-read-list (reader)
   "Starting with a opening parentheis '('. Read a list of tokens as MAL forms."

@@ -19,7 +19,7 @@ EVAL(ast,env):
       'do:          return eval_ast(rest(ast), env)[-1]
       'if:          return EVAL(EVAL(ast[1], env) ? ast[2] : ast[3], env)
       'fn*:         return (...a) -> EVAL(ast[2], new Env(env, ast[1], a))
-      _default_:    f, args = eval_ast(ast, env)
+            _default_:    f, args = eval_ast(ast, env)
                     return apply(f, args)
 
 PRINT(exp): return printer.pr_str(exp)

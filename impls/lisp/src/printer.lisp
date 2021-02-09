@@ -6,4 +6,6 @@
     ((numberp mal) (format nil "~a" mal))
     ((listp mal) (format nil "(~{~a~^ ~})" (mapcar #'mal-print-str mal)))
     ((functionp mal) (format nil "#<function>"))
+    ((eq mal 'true) "true")
+    ((eq mal 'false) "false")
     (t (format nil "~a" mal))))

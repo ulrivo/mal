@@ -1,26 +1,10 @@
 (in-package :mal)
 
-(defun mal-add (x y)
-  (+ x y))
-
-(defun mal-subtract (x y)
-  (- x y))
-
-(defun mal-multiply (x y)
-  (* x y))
-
-(defun mal-divide (x y)
-  (truncate (/ x y)))
-
-
 (defun init-env ()
-  "Initialize a new environment with arithmetic functions. Answer environment."
+  "Initialize a new environment with all functions from *ns*
+   defined in core.lisp. Answer environment."
   (let ((env (make-environment)))
-    (mapcan (lambda (kv) (env-set env (car kv) (cdr kv)))
-            '((+ . mal-add)
-              (- . mal-subtract)
-              (* . mal-multiply)
-              (/ . mal-divide)))
+    (mapcan (lambda (kv) (env-set env (car kv) (cdr kv))) *ns*)
     env))
 
 (defparameter *env* (init-env))
@@ -33,7 +17,7 @@
      (case (first ast)
        (|def!|
         (env-set env (second ast) (mal-eval (third ast) env)))
-       (|let*|
+       (|let*|      ;; build new env with binding all elements of second list
         (let ((new-env (make-environment env)))
           (loop for (x y) on (second ast) by #'cddr do
             (if y
@@ -41,10 +25,10 @@
                 (signal-eval-error
                  (format nil "odd number of arguments in let*: ~s" ast))))
           (mal-eval (third ast) new-env)))
-       (|do|
+       (|do|     ;; do evaluate all elements of a list, answer last
         (last (mal-eval-ast (cdr ast) env)))
        (|if|
-        (mal-eval (if (mal-eval (second ast) env)
+        (mal-eval (if (eq (mal-eval (second ast) env) 'true)
                       (third ast)
                       (fourth ast)) env))
        (|fn*|
