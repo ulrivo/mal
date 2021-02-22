@@ -1,5 +1,7 @@
 (in-package :mal)
 
+(defparameter *nil* (intern "nil" :mal))
+
 (defun init-env ()
   "Initialize a new environment with all functions from *ns*
    defined in core.lisp. Answer environment."
@@ -17,7 +19,7 @@
      (case (first ast)
        (|def!|
         (env-set env (second ast) (mal-eval (third ast) env)))
-       (|let*|      ;; build new env with binding all elements of second list
+       (|let*| ;; build new env with binding all elements of second list
         (let ((new-env (make-environment env)))
           (loop for (x y) on (second ast) by #'cddr do
             (if y
@@ -25,18 +27,20 @@
                 (signal-eval-error
                  (format nil "odd number of arguments in let*: ~s" ast))))
           (mal-eval (third ast) new-env)))
-       (|do|     ;; do evaluate all elements of a list, answer last
-        (last (mal-eval-ast (cdr ast) env)))
+       (|do| ;; do evaluate all elements of a list, answer last
+        (car (last (mal-eval-ast (cdr ast) env))))
        (|if|
         (let ((result (mal-eval (second ast) env)))
           (mal-eval (if (not (or (eq result 'false)
-                                 (eq result (intern "nil" :mal))))
+                                 (eq result *nil*)))
                         (third ast)
-                        (fourth ast)) env)))
+                        (if (< (length ast) 4) *nil* (fourth ast))) env)))
        (|fn*|
         (lambda (&rest params)
           (mal-eval (third ast)
                     (make-environment env (second ast)  params))))
+       (|prn|
+        (mal-print-str (cdr ast)))
        (otherwise
         (let ((fargs (mal-eval-ast ast env)))
           (apply (car fargs) (cdr fargs))))))))
@@ -57,7 +61,7 @@
                     (error-msg err))
                   (t (err)
                     (error-msg (format nil " -default- ~a" err))))))
-    (princ (mal-print-str result)))
+    (format t "~a~%"  result))
   (terpri))
 
 (defun main ()
