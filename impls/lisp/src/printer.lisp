@@ -1,10 +1,15 @@
 (in-package :mal)
 
+;; print functions
+
+(defun mal-pr (&rest ps)
+  (format nil "~{~a~^ ~}" ps))
+
 (defun mal-print-str (mal)
-  "Read a MAL type object and answer a string."
+  "Read a MAL type object and print a string."
   (cond
     ((numberp mal) (format t "~a~%" mal))
-    ((listp mal) (format t "(~{~a~^ ~})~%" (mapcar #'mal-print-str mal)))
+    ((listp mal) (format t "(~{~a~^ ~})~%" mal))
     ((functionp mal) (format t "#<function>~%"))
     ((eq mal 'true) (format t "true~%"))
     ((eq mal 'false) (format t "false~%"))

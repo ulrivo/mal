@@ -62,11 +62,6 @@
 (defun mal->= (x y)
   (mal-boolean (>= x y)))
 
-;; print functions
-
-(defun mal-pr (&rest ps)
-  (format nil "~{~a~^ ~}" ps))
-
 ;; namespace with functions
 
 (defparameter *ns*

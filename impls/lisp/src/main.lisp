@@ -12,6 +12,7 @@
 (defparameter *env* (init-env))
 
 (defun mal-eval (ast env)
+  "Evaluate a MAL expression."
   (cond
     ((not (listp ast)) (mal-eval-ast ast env))
     ((null ast) ast)
@@ -40,7 +41,7 @@
           (mal-eval (third ast)
                     (make-environment env (second ast)  params))))
        (|prn|
-        (mal-print-str (cdr ast)))
+        (mal-print-str (mal-eval-ast (second ast) env)))
        (otherwise
         (let ((fargs (mal-eval-ast ast env)))
           (apply (car fargs) (cdr fargs))))))))
@@ -61,7 +62,7 @@
                     (error-msg err))
                   (t (err)
                     (error-msg (format nil " -default- ~a" err))))))
-    (format t "~a~%"  result))
+    (mal-print-str  result))
   (terpri))
 
 (defun main ()
