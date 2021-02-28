@@ -22,7 +22,7 @@
   (if b 'true 'false))
 
 (defun mal-not (b)
-  (if (eql b 'true)
+  (if (eq b 'true)
       'false
       'true))
 
@@ -37,11 +37,14 @@
           (equal a b))))
     (mal-boolean (mequal x y))))
 
+(defun mal-list (&rest xs)
+  (if xs xs 'empty))
+
 (defun mal-listp (xs)
-  (mal-boolean (listp xs)))
+  (mal-boolean (or (listp xs) (eq xs 'empty))))
 
 (defun mal-emptyp (xs)
-  (mal-boolean (null xs)))
+  (mal-boolean (eq xs 'empty)))
 
 (defun mal-count (xs)
   (if (listp xs)
@@ -71,7 +74,7 @@
     (/        . mal-divide)
     (=        . mal-equal)
     (|prn|    . mal-pr)
-    (|list|   . list)
+    (|list|   . mal-list)
     (|list?|  . mal-listp)
     (|not|    . mal-not)
     (|empty?| . mal-emptyp)
