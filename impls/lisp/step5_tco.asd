@@ -14,8 +14,9 @@
                (:file "env" :depends-on ("package" "util"))
                (:file "reader" :depends-on ("package" "util"))
                (:file "printer" :depends-on ("package"))
+               (:file "function" :depends-on ("package"))
                (:file "main"
-                :depends-on ("package" "util" "core" "reader" "printer" "env")))
+                :depends-on ("package" "util" "core" "reader" "printer" "env" "function")))
   :depends-on (:cl-readline :cl-ppcre)
   :pathname "src/"
 )
